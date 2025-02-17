@@ -58,6 +58,10 @@ The File Logger allows you to log DNS traffic to a file in various formats, with
   > Specifies the maximum number of packets that can be buffered before discard additional packets.
   > Set to zero to use the default global value.
 
+* `overwrite-dns-port-pcap` (bool)
+  > tThis option is used only with the `pcap` output mode.
+  > It replaces the destination port with 53, ensuring no distinction between DoT, DoH, and DoQ.
+
 **Default configuration**:
 
 ```yaml
@@ -74,6 +78,7 @@ logfile:
   postrotate-command: null
   postrotate-delete-success: false
   chan-buffer-size: 0
+  overwrite-dns-port-pcap: false
 ```
 
 ## Full configuration examples
@@ -132,19 +137,6 @@ mv $1 $BACKUP_FOLDER/$3
 
 > Note: If compression is enabled, the postrotate-command will run only after compression completes.
 
-## Save to PCAP files
-
-You can configure the collector to save traffic in PCAP format. Only available with `logger file`.
-
-In PCAP mode, DNS traffic is logged in binary form, capturing details over various protocols. The following mappings are used:
-
-| Origin protocol        | Translated to                  |
-| -----------------------|--------------------------------|
-| DNS/53 over UDP        | DNS UDP/53                     |
-| DNS/53 over TCP        | DNS TCP/53                     |
-| DoH/443                | DNS UDP/443 (no cipher)        |
-| DoT/853                | DNS UDP/853 (no cipher)        |
-| DoQ                    | Currently unsupported          |
 
 ## Save to DNStap files
 
