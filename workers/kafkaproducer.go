@@ -90,12 +90,17 @@ func (w *KafkaProducer) ConnectToKafka(ctx context.Context, readyTimer *time.Tim
 
 		topic := w.GetConfig().Loggers.KafkaProducer.Topic
 		partition := w.GetConfig().Loggers.KafkaProducer.Partition
-		address := w.GetConfig().Loggers.KafkaProducer.RemoteAddress + ":" + strconv.Itoa(w.GetConfig().Loggers.KafkaProducer.RemotePort)
+
+		// get list of brokers to dial to
+		dialAddresses := []string{}
+		for _, singleAddress := range strings.Split(w.GetConfig().Loggers.KafkaProducer.RemoteAddress, ",") {
+			dialAddresses = append(dialAddresses, singleAddress+":"+strconv.Itoa(w.GetConfig().Loggers.KafkaProducer.RemotePort))
+		}
 
 		if partition == nil {
-			w.LogInfo("connecting to kafka=%s partition=all topic=%s", address, topic)
+			w.LogInfo("connecting to one of kafka=%s on port=%s partition=all topic=%s", w.GetConfig().Loggers.KafkaProducer.RemoteAddress, w.GetConfig().Loggers.KafkaProducer.RemotePort, topic)
 		} else {
-			w.LogInfo("connecting to kafka=%s partition=%d topic=%s", address, *partition, topic)
+			w.LogInfo("connecting to one of kafka=%s on port=%s partition=%d topic=%s", w.GetConfig().Loggers.KafkaProducer.RemoteAddress, w.GetConfig().Loggers.KafkaProducer.RemotePort, *partition, topic)
 		}
 
 		dialer := &kafka.Dialer{
@@ -149,13 +154,26 @@ func (w *KafkaProducer) ConnectToKafka(ctx context.Context, readyTimer *time.Tim
 
 		if partition == nil {
 			// Lookup partitions and create connections for each
-			partitions, err := dialer.LookupPartitions(ctx, "tcp", address, topic)
-			if err != nil {
-				w.LogError("failed to lookup partitions:", err)
+			var partitions []kafka.Partition
+			address := ""
+			// dial all the given brokers
+			for _, curAddress := range dialAddresses {
+				partitions, err = dialer.LookupPartitions(ctx, "tcp", curAddress, topic)
+				if err != nil {
+					w.LogError("failed to lookup partitions on bootstrap broker %s :%s", curAddress, err)
+					continue
+				}
+				// select only the reachable broker
+				address = curAddress
+				break
+			}
+			if address == "" {
 				w.LogInfo("retry to connect in %d seconds", w.GetConfig().Loggers.KafkaProducer.RetryInterval)
 				time.Sleep(time.Duration(w.GetConfig().Loggers.KafkaProducer.RetryInterval) * time.Second)
 				continue
 			}
+			w.LogInfo("successfully connected to %s", address)
+
 			for _, p := range partitions {
 				conn, err = dialer.DialLeader(ctx, "tcp", address, p.Topic, p.ID)
 				if err != nil {
@@ -168,9 +186,17 @@ func (w *KafkaProducer) ConnectToKafka(ctx context.Context, readyTimer *time.Tim
 			}
 		} else {
 			// DialLeader directly for a specific partition
-			conn, err = dialer.DialLeader(ctx, "tcp", address, topic, *partition)
-			if err != nil {
-				w.LogError("failed to dial leader for partition %d and topic %s: %s", *partition, topic, err)
+			conSuccess := false
+			for _, curAddress := range dialAddresses {
+				conn, err = dialer.DialLeader(context.Background(), "tcp", curAddress, topic, *partition)
+				if err != nil {
+					w.LogError("failed to dial leader for partition %d and topic %s on bootstrap broker %s: %s", *partition, topic, curAddress, err)
+					continue
+				}
+				conSuccess = true
+				break
+			}
+			if !conSuccess {
 				w.LogInfo("retry to connect in %d seconds", w.GetConfig().Loggers.KafkaProducer.RetryInterval)
 				time.Sleep(time.Duration(w.GetConfig().Loggers.KafkaProducer.RetryInterval) * time.Second)
 				continue

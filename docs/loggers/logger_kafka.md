@@ -5,8 +5,8 @@ Kafka producer, based on [kafka-go](https://github.com/segmentio/kafka-go) libra
 Options:
 
 * `remote-address` (string)
-  > Remote address.
-  > Specifies the remote address to connect to.
+  > Remote addresses.
+  > Specifies the remote addresses to connect to, separated by commas (,). This parameter is used to provide the IP addresses of Kafka brokers for initial cluster communication.
 
 * `remote-port` (integer)
   > Remote tcp port.
