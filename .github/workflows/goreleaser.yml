@@ -8,13 +8,13 @@ permissions:
   contents: read
 
 env:
-  GO_VERSION: "1.23"
+  GO_VERSION: "1.24"
 
 jobs:
   goreleaser:
     permissions:
       contents: write  # for goreleaser/goreleaser-action to create a GitHub release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4

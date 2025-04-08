@@ -18,14 +18,14 @@ permissions:
   contents: read
 
 env:
-  PROM_VERSION: "2.55.0"
-  GENTAP: "0.8.0"
+  PROM_VERSION: "3.2.1"
+  GENTAP: "1.0.0"
   PYTHON_VERSION: '3.13'
-  GO_VERSION: '1.23'
+  GO_VERSION: '1.24'
 
 jobs:
   build_bin:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -78,7 +78,7 @@ jobs:
       
   config:
     needs: build_bin
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
@@ -101,7 +101,7 @@ jobs:
 
   metrics:
     needs: build_bin
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
@@ -131,7 +131,7 @@ jobs:
         curl -u admin:changeme http://127.0.0.1:8081/metrics | ./promtool check metrics
 
   count:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout repository
