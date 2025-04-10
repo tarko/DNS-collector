@@ -7,7 +7,7 @@ info:
     email: d.machard@gmail.com
   license:
     name: MIT
-    url: 'https://github.com/dmachard/go-dnscollector/blob/main/LICENSE'
+    url: 'https://github.com/dmachard/DNS-collector/blob/main/LICENSE'
   x-logo:
     url: ''
 servers:
@@ -161,4 +161,4 @@ paths:
       summary: Return suspicious domains list         
 security: []
 externalDocs:
-  url: 'https://github.com/dmachard/go-dnscollector'
+  url: 'https://github.com/dmachard/DNS-collector'

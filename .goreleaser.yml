@@ -31,7 +31,7 @@ builds:
   mod_timestamp: '{{ .CommitTimestamp }}'
 
   # Binary name.
-  binary: go-dnscollector
+  binary: dnscollector
 
 archives:
 - id: zipformat

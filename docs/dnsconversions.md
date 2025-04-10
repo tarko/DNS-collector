@@ -2,7 +2,7 @@
 
 ## Overview
 
-All DNStap messages or network-captured data are first transformed into the [DNSMessage](https://pkg.go.dev/github.com/dmachard/go-dnscollector/dnsutils#DNSMessage) structure. Once in this structure, the object can be further converted to text, JSON, or any specific output format (e.g., Kafka, Redis).
+All DNStap messages or network-captured data are first transformed into the [DNSMessage](https://pkg.go.dev/github.com/dmachard/DNS-collector/dnsutils#DNSMessage) structure. Once in this structure, the object can be further converted to text, JSON, or any specific output format (e.g., Kafka, Redis).
 
 - [Text Format Inline](#text-format-inline)
 - [JSON Enconding](#json-encoding)
@@ -105,7 +105,7 @@ The DNS to Jinja encoding is very powerful but slow, so use it only under specif
 
 **Default directives**
 
-All directives are in https://pkg.go.dev/github.com/dmachard/go-dnscollector/dnsutils#DNSMessage
+All directives are in https://pkg.go.dev/github.com/dmachard/DNS-collector/dnsutils#DNSMessage
 The template can be defined in the [global settings](advanced_config.md#default-text-format) or on loggers.
 
 To use the jinja, add for example the folowwing code in your text format 

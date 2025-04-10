@@ -11,7 +11,7 @@ Capabilities:
 - cap_perfmon is required to create a kernel perf buffer for exporting packet data into user space
 
 ```bash
-sudo setcap cap_sys_resource,cap_net_raw,cap_perfmon+ep go-dnscollector
+sudo setcap cap_sys_resource,cap_net_raw,cap_perfmon+ep dnscollector
 ```
 
 Options:

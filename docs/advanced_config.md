@@ -14,7 +14,7 @@
 DNS-collector also supports a dry-run mode for configuration verification. Run the following command to check your setup:
 
 ```bash
-./go-dnscollector -config config.yml -test-config
+./dnscollector -config config.yml -test-config
 INFO: 2023/12/24 14:43:29.043730 main - config OK!
 ```
 

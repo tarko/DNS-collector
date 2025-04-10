@@ -77,9 +77,9 @@ jobs:
         run: |
           if [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
             set CGO_ENABLED=0
-            go build -ldflags="-s -w" -o go-dnscollector.exe .
+            go build -ldflags="-s -w" -o dnscollector.exe .
           else
-            CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=amd64 go build -ldflags="-s -w" -o go-dnscollector *.go
+            CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=amd64 go build -ldflags="-s -w" -o dnscollector *.go
           fi
         shell: bash
 
@@ -96,4 +96,4 @@ jobs:
         run: |
           PLATFORM=${{ matrix.platform }}  
           TAG=$(echo "$PLATFORM" | tr '/' '-')
-          docker build --build-arg VERSION=dev . --platform $PLATFORM --file Dockerfile -t go-dnscollector:$TAG
+          docker build --build-arg VERSION=dev . --platform $PLATFORM --file Dockerfile -t dnscollector:$TAG

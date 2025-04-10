@@ -5,7 +5,7 @@ These features can be only used between two `DNS-collector` instance.
 
 ## Compression
 
-> ref: https://github.com/dmachard/go-dnscollector/issues/490
+> ref: https://github.com/dmachard/DNS-collector/issues/490
 
 DNSTAP messages are highly compressible. They can be sent in reasonably large blocks, which enables significant compression for transmission over long-haul network links. While DNSTAP does not natively support compression, it seems not unreasonable that `DNS-collector` could have a configurable compression flag that would mark a stream as being compressed with one of the different models of compression that are supported in other areas of the code currently. This would allow a much more efficient transmission of DNSTAP-based messages through various components.
 

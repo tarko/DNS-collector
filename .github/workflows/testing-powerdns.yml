@@ -32,13 +32,13 @@ jobs:
 
       - name: Build Binary
         run: |
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o go-dnscollector *.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o dnscollector *.go
 
       - name: Upload Binary Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: go-dnscollector
-          path: go-dnscollector
+          name: dnscollector
+          path: dnscollector
 
   test_protobuf:
     needs: build
@@ -62,10 +62,10 @@ jobs:
       - name: Download Binary Artifact
         uses: actions/download-artifact@v4
         with:
-          name: go-dnscollector
+          name: dnscollector
 
       - name: Make Binary Executable
-        run: chmod +x go-dnscollector
+        run: chmod +x dnscollector
 
       - name: Deploy Docker image
         run: |

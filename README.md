@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://goreportcard.com/badge/github.com/dmachard/go-dns-collector" alt="Go Report"/>
+  <img src="https://goreportcard.com/badge/github.com/dmachard/DNS-collector" alt="Go Report"/>
   <img src="https://img.shields.io/badge/go%20version-min%201.23-green" alt="Go version"/>
   <img src="https://img.shields.io/badge/go%20tests-532-green" alt="Go tests"/>
   <img src="https://img.shields.io/badge/go%20bench-21-green" alt="Go bench"/>
@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/dmachard/go-dnscollector?logo=github&sort=semver" alt="release"/>
-  <img src="https://img.shields.io/docker/pulls/dmachard/go-dnscollector.svg" alt="docker"/>
+  <img src="https://img.shields.io/github/v/release/dmachard/DNS-collector?logo=github&sort=semver" alt="release"/>
+  <img src="https://img.shields.io/docker/pulls/dmachard/dnscollector.svg" alt="docker"/>
 </p>
 
 <p align="center">
@@ -19,9 +19,9 @@
 
 > Additionally, DNS-collector also support
 >
-> - [Extended](https://github.com/dmachard/go-dns-collector/blob/main/docs/extended_dnstap.md) DNStap with TLS encryption, compression, and more metadata capabilities
-> - DNS protocol conversions to [Plain text, Key/Value JSON, Jinja, PCAP and more](https://github.com/dmachard/go-dns-collector/blob/main/docs/dnsconversions.md)
-> - DNS parser with [Extension Mechanisms for DNS (EDNS)](https://github.com/dmachard/go-dns-collector/blob/main/docs/dnsparser.md) support
+> - [Extended](https://github.com/dmachard/DNS-collector/blob/main/docs/extended_dnstap.md) DNStap with TLS encryption, compression, and more metadata capabilities
+> - DNS protocol conversions to [Plain text, Key/Value JSON, Jinja, PCAP and more](https://github.com/dmachard/DNS-collector/blob/main/docs/dnsconversions.md)
+> - DNS parser with [Extension Mechanisms for DNS (EDNS)](https://github.com/dmachard/DNS-collector/blob/main/docs/dnsparser.md) support
 > - Live capture on a network interface
 > - IPv4/v6 defragmentation and TCP reassembly
 > - Nanoseconds in timestamps
@@ -58,7 +58,7 @@
     - [`Prometheus`](docs/loggers/logger_prometheus.md) exporter
     - [`OpenTelemetry`](docs/loggers/logger_opentelemetry.md) tracing dns
     - [`Statsd`](docs/loggers/logger_statsd.md) support
-    - [`REST API`](docs/loggers/logger_restapi.md) with [swagger](https://generator.swagger.io/?url=https://raw.githubusercontent.com/dmachard/go-dnscollector/main/docs/swagger.yml) to search DNS domains
+    - [`REST API`](docs/loggers/logger_restapi.md) with [swagger](https://generator.swagger.io/?url=https://raw.githubusercontent.com/dmachard/DNS-collector/main/docs/swagger.yml) to search DNS domains
   - *Send to remote host with generic transport protocol*
     - Raw [`TCP`](docs/loggers/logger_tcp.md) client
     - [`Syslog`](docs/loggers/logger_syslog.md) with TLS support
@@ -94,10 +94,10 @@
 
 ## Get Started
 
-Download the latest [`release`](https://github.com/dmachard/go-dns-collector/releases) binary and start the DNS-collector with the provided configuration file. The default configuration listens on `tcp/6000` for a DNSTap stream and DNS logs are printed on standard output.
+Download the latest [`release`](https://github.com/dmachard/DNS-collector/releases) binary and start the DNS-collector with the provided configuration file. The default configuration listens on `tcp/6000` for a DNSTap stream and DNS logs are printed on standard output.
 
 ```bash
-./go-dnscollector -config config.yml
+./dnscollector -config config.yml
 ```
 
 ![run](docs/_images/terminal.gif)

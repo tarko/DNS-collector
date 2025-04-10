@@ -18,6 +18,7 @@
 __pycache__/
 
 # ignore some specifics files
+dnscollector
 go-dnscollector
 bin/
 include/

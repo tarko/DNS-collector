@@ -10,7 +10,7 @@ Raw DNS packets sniffer. Setting `CAP_NET_RAW` capabilities on executables allow
 Capabilities:
 
 ```bash
-sudo setcap cap_net_admin,cap_net_raw=eip go-dnscollector
+sudo setcap cap_net_admin,cap_net_raw=eip dnscollector
 ```
 
 Options:

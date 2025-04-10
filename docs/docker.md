@@ -8,7 +8,7 @@
 Docker run with a custom configuration:
 
 ```bash
-docker run -d dmachard/go-dnscollector -v $(pwd)/config.yml:/etc/dnscollector/config.yml
+docker run -d dmachard/dnscollector -v $(pwd)/config.yml:/etc/dnscollector/config.yml
 ```
 
 ## Docker-compose (Recommended)
@@ -23,8 +23,8 @@ cd ./dnscollector
 Download docker-compose.yml and docker-example.env, either by running the following commands:
 
 ```bash
-wget https://github.com/dmachard/go-dnscollector/releases/latest/download/docker-compose.yml
-wget -O .env https://github.com/dmachard/go-dnscollector/releases/latest/download/docker-example.env
+wget https://github.com/dmachard/DNS-collector/releases/latest/download/docker-compose.yml
+wget -O .env https://github.com/dmachard/DNS-collector/releases/latest/download/docker-example.env
 ```
 
 Populate the .env file with custom values:

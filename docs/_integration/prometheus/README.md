@@ -1,7 +1,7 @@
 
 # DNS-collector with Prometheus
 
-- Download the [`docker-compose`](https://github.com/dmachard/go-dnscollector/blob/doc_atags/docs/_integration/prometheus/docker-compose.yml) file
+- Download the [`docker-compose`](https://github.com/dmachard/DNS-collector/blob/doc_atags/docs/_integration/prometheus/docker-compose.yml) file
 
 - Create the `data` folder.
 
