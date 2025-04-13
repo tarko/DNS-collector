@@ -419,3 +419,56 @@ func TestFilteringMultipleFilters(t *testing.T) {
 		t.Errorf("invalid number of subtransforms enabled")
 	}
 }
+
+func TestFilteringDownsampleFilter(t *testing.T) {
+	// config
+	config := pkgconfig.GetFakeConfigTransformers()
+	config.Filtering.Enable = true
+	config.Filtering.Downsample = 3
+
+	outChans := []chan dnsutils.DNSMessage{}
+
+	// init processor
+	filtering := NewFilteringTransform(config, logger.New(false), "test", 0, outChans)
+
+	// get transform function
+	subtransforms, _ := filtering.GetTransforms()
+	var downsampleFunc func(dm *dnsutils.DNSMessage) (int, error)
+	for _, tr := range subtransforms {
+		if tr.name == "filtering:downsampling" {
+			downsampleFunc = tr.processFunc
+		}
+	}
+
+	if downsampleFunc == nil {
+		t.Fatal("downsample transform not found")
+	}
+
+	// simulate N messages
+	var kept, dropped int
+	N := config.Filtering.Downsample
+
+	for i := 1; i <= 10; i++ {
+		dm := dnsutils.GetFakeDNSMessage()
+
+		result, _ := downsampleFunc(&dm)
+
+		if i%N == 0 {
+			if result != ReturnKeep {
+				t.Errorf("message %d should be kept (expected ReturnKeep)", i)
+			} else {
+				kept++
+			}
+		} else {
+			if result != ReturnDrop {
+				t.Errorf("message %d should be dropped (expected ReturnDrop)", i)
+			} else {
+				dropped++
+			}
+		}
+	}
+
+	if kept != 10/N {
+		t.Errorf("expected %d messages to be kept, got %d", 10/N, kept)
+	}
+}
