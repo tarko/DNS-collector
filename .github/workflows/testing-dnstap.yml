@@ -59,6 +59,7 @@ jobs:
           - { service: "dnsdist", version: "19", mode: "doq" }
           - { service: "dnsdist2", version: "20", mode: "tcp" }
           - { service: "dnsdist2", version: "20", mode: "doq" }
+          - { service: "knotresolver", version: "6.0.11", mode: "unix" }
 
     steps:
       - uses: actions/checkout@v4
@@ -91,29 +92,48 @@ jobs:
           mv dnscollector.key ./tests/testsdata/
           mv dnscollector.crt ./tests/testsdata/
 
+
+      - name: Set environment variable for knotresolver
+        if: ${{ matrix.config.service == 'knotresolver' }}
+        run: echo "COLLECTOR_USER=root" >> $GITHUB_ENV
+
       - name: Add pdns user for unix socket test
         run: |
           sudo addgroup --system --gid 953 pdns
           sudo adduser --system --disabled-password --no-create-home -uid 953 --gid 953 pdns
+          sudo mkdir -p /tmp/dnstap-socket
+          sudo chmod 777 /tmp/dnstap-socket
     
       - name: Deploy docker image for "${{ matrix.config.service }}"
         run: |
           case ${{ matrix.config.service }} in
             "unbound")
-              sudo docker run -d --network="host" --name=unbound --volume=$PWD/tests/testsdata/unbound/unbound_${{ matrix.config.mode }}.conf:/opt/unbound/etc/unbound/unbound.conf:z -v /tmp/:/opt/unbound/etc/unbound/tmp/:z mvance/unbound:${{ matrix.config.version }}
+              sudo docker run -d --network="host" --name=dnsserver --volume=$PWD/tests/testsdata/unbound/unbound_${{ matrix.config.mode }}.conf:/opt/unbound/etc/unbound/unbound.conf:z -v /tmp/dnstap-socket/:/opt/unbound/etc/unbound/tmp/:z mvance/unbound:${{ matrix.config.version }}
               ;;
             "coredns")
-              sudo docker run -d --network="host" --name=coredns -v $PWD/tests/testsdata/:$PWD/tests/testsdata/ -v /tmp/:/tmp/ coredns/coredns:${{ matrix.config.version }} -conf $PWD/tests/testsdata/coredns/coredns_${{ matrix.config.mode }}.conf
+              sudo docker run -d --network="host" --name=dnsserver -v $PWD/tests/testsdata/:$PWD/tests/testsdata/ -v /tmp/dnstap-socket/:/tmp/ coredns/coredns:${{ matrix.config.version }} -conf $PWD/tests/testsdata/coredns/coredns_${{ matrix.config.mode }}.conf
               ;;
             "dnsdist")
-              sudo docker run -d --network="host" --name=dnsdist --volume=$PWD/tests/testsdata/powerdns/dnsdist_${{ matrix.config.mode }}.conf:/etc/dnsdist/conf.d/dnsdist.conf:z --volume=$PWD/tests/testsdata/dnscollector.key:/etc/dnsdist/conf.d/server.key:z --volume=$PWD/tests/testsdata/dnscollector.crt:/etc/dnsdist/conf.d/server.crt:z -v /tmp/:/tmp/ powerdns/dnsdist-${{ matrix.config.version }}
+              sudo docker run -d --network="host" --name=dnsserver --volume=$PWD/tests/testsdata/powerdns/dnsdist_${{ matrix.config.mode }}.conf:/etc/dnsdist/conf.d/dnsdist.conf:z --volume=$PWD/tests/testsdata/dnscollector.key:/etc/dnsdist/conf.d/server.key:z --volume=$PWD/tests/testsdata/dnscollector.crt:/etc/dnsdist/conf.d/server.crt:z -v /tmp/dnstap-socket/:/tmp/ powerdns/dnsdist-${{ matrix.config.version }}
               ;;
             "dnsdist2")
-              sudo docker run -d --network="host" --name=dnsdist --volume=$PWD/tests/testsdata/powerdns/dnsdist2_${{ matrix.config.mode }}.yml:/etc/dnsdist/dnsdist.yml:z --volume=$PWD/tests/testsdata/dnscollector.key:/etc/dnsdist/server.key:z --volume=$PWD/tests/testsdata/dnscollector.crt:/etc/dnsdist/server.crt:z -v /tmp/:/tmp/ powerdns/dnsdist-${{ matrix.config.version }} -C /etc/dnsdist/dnsdist.yml
+              sudo docker run -d --network="host" --name=dnsserver --volume=$PWD/tests/testsdata/powerdns/dnsdist2_${{ matrix.config.mode }}.yml:/etc/dnsdist/dnsdist.yml:z --volume=$PWD/tests/testsdata/dnscollector.key:/etc/dnsdist/server.key:z --volume=$PWD/tests/testsdata/dnscollector.crt:/etc/dnsdist/server.crt:z -v /tmp/dnstap-socket/:/tmp/ powerdns/dnsdist-${{ matrix.config.version }} -C /etc/dnsdist/dnsdist.yml
+              ;;
+            "knotresolver")
+              sudo docker run -d --network="host" --name=dnsserver --volume=$PWD/tests/testsdata/knot/knotresolver_${{ matrix.config.mode }}.yml:/etc/knot-resolver/config.yaml:z -v /tmp/dnstap-socket/:/tmp/ cznic/knot-resolver:v${{ matrix.config.version }}
               ;;
           esac
           until (dig -p 5553 www.github.com @127.0.0.1 | grep NOERROR); do sleep 5.0; done
 
+      - name: Show Docker logs
+        run: |
+          sudo docker logs dnsserver
+
+      - name: Show Docker ID
+        if: ${{ matrix.config.service == 'knotresolver' }}
+        run: |
+          sudo docker exec dnsserver id
+        
       - name: Run Tests for ${{ matrix.config.service }} - ${{ matrix.config.mode }}
         run: |
           python3 -m venv venv
