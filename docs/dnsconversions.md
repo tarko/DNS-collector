@@ -31,6 +31,7 @@ The text format can be customized using the following directives.
 - `policy-match`: dnstap policy match
 - `policy-value`: dnstap policy value
 - `query-zone`: dnstap query zone
+- `http-protocol`: dnstap HTTP protocol (HTTP2 or HTTP3), can be useful with DoH
 - `opcode`: dns opcode (integer)
 - `rcode`: dns return code
 - `queryip`: dns query ip
@@ -180,6 +181,7 @@ Here's a flat JSON output formatted using `jq`:
   "dnstap.policy-match": "-",
   "dnstap.policy-value": "-",
   "dnstap.query-zone": "-",
+  "dnstap.http-protocol": "-",
   "edns.dnssec-ok": 0,
   "edns.options.0.code": 10,
   "edns.options.0.data": "-",
@@ -278,6 +280,7 @@ Here's a flat JSON output formatted using `jq`:
     "policy-match": "-",
     "policy-value": "-",
     "query-zone": "-",
+    "http-protocol": "-"
   }
 }
 ```
