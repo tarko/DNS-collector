@@ -26,6 +26,17 @@
 > - IPv4/v6 defragmentation and TCP reassembly
 > - Nanoseconds in timestamps
 
+> The following DNS servers are automatically tested in CI to verify `DNS-collector` compatibility 
+> with various DNS servers using [dnstap](https://dnstap.info/).
+> | DNS Server     | Versions Tested     | Modes Tested        |
+> |----------------|---------------------|---------------------|
+> | ✅ **Unbound**     | 1.22.x, 1.21.x     | TCP                 |
+> | ✅ **CoreDNS**     | 1.12.1, 1.11.1  | TCP, TLS            |
+> | ✅ **PowerDNS DNSdist**     | 2.0.x, 1.9.x, 1.8.x, 1.7.x       | TCP, Unix           |
+> | ✅ **Knot Resolver** | 6.0.11           | Unix                |
+> | ✅ **Bind** | 9.18.33          | Unix                |
+
+
 ## Features
 
 - **[Pipelining](./docs/running_mode.md)**
@@ -147,21 +158,9 @@ A [build-in](./docs/dashboards/grafana_exporter.json) dashboard is available for
 
 ![dashboard](docs/_images/dashboard_global.png)
 
-## Tested Configurations
-
-The following configurations are automatically tested in CI to verify `DNS-collector` compatibility with various DNS servers using **dnstap**.
-
-| DNS Server     | Versions Tested     | Modes Tested        |
-|----------------|---------------------|---------------------|
-| **Unbound**     | 1.22.x, 1.21.x     | TCP                 |
-| **CoreDNS**     | 1.12.1, 1.11.1  | TCP, TLS            |
-| **DNSdist**     | 2.0.x, 1.9.x, 1.8.x, 1.7.x       | TCP, Unix           |
-| **Knot Resolver** | 6.0.11           | Unix                |
-
 ## Contributing
 
 See the [development guide](./docs/development.md) for more information on how to build it yourself.
-
 
 ## More DNS tools ?
 
