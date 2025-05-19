@@ -21,6 +21,9 @@ Options:
 * `flush-interval` (integer)
   > Specifies the interval between buffer flushes.
 
+* `cancel-kafka` (boolean)
+  > Determines whether the Kafka worker should stop running if all configured brokers become unreachable after 10 seconds.
+
 * `tls-support` (boolean)
   > Enables or disables TLS (Transport Layer Security) support.
   > If set to true, TLS will be used for secure communication.

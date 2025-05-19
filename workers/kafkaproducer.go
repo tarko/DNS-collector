@@ -369,7 +369,10 @@ func (w *KafkaProducer) StartLogging() {
 
 		case <-readyTimer.C:
 			w.LogError("failed to established connection")
-			cancelKafka()
+			// Stop the kafka producer when the readyTimer is finished
+			if w.GetConfig().Loggers.KafkaProducer.CancelKafka {
+				cancelKafka()
+			}
 
 		case <-w.kafkaReady:
 			w.LogInfo("producer connected with success to your kafka instance(s)")
