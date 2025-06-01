@@ -1,37 +1,73 @@
-# Performance tuning
+# DNS-collector - Performance tuning
 
-All loggers and collectors are based on buffered channels.
-The size of these buffers can be configured with `buffer-size` in global section.
-If you encounter the following warning message in your logs, it indicates that you need to increase the buffer size:
+
+## Overview
+
+DNS-collector can handle high-volume DNS traffic with proper tuning. This guide helps you optimize performance for large-scale deployments and understand the performance implications of different configuration choices.
+
+## Performance Monitoring
+
+### Built-in Metrics
+
+DNS-collector provides comprehensive performance metrics through Prometheus endpoints:
+
+```yaml
+global:
+  telemetry:
+    enabled: true
+    web-listen: ":9165"
+    web-path: "/metrics"
+    prometheus-prefix: "dnscollector"
+```
+
+### Key Performance Metrics
+
+**Throughput Metrics**
+- `dnscollector_input_packets_total` - Total packets received by collectors
+- `dnscollector_output_packets_total` - Total packets processed by loggers
+- `dnscollector_forwarded_packets_total` - Packets successfully forwarded
+- `dnscollector_dropped_packets_total` - Packets dropped due to errors
+
+**Buffer Metrics**
+- `dnscollector_buffer_usage` - Current buffer utilization
+- `dnscollector_buffer_dropped_total` - Packets dropped due to full buffers
+
+**System Metrics**
+- `dnscollector_memory_usage_bytes` - Memory consumption
+- `dnscollector_cpu_usage_percent` - CPU utilization
+- `dnscollector_goroutines_total` - Active goroutines
+
+
+### Grafana Dashboard
+
+A pre-built Grafana dashboard is available for comprehensive monitoring:
+
+```bash
+# Import the dashboard JSON
+curl -O https://raw.githubusercontent.com/dmachard/DNS-collector/main/docs/dashboards/grafana_exporter.json
+```
+
+![Performance Dashboard](docs/_images/dashboard_global.png)
+
+## Buffer Optimization
+
+### Understanding Buffers
+
+All collectors and loggers use buffered channels for data flow. Buffer sizing is critical for high-throughput scenarios.
+
+### Buffer Configuration
+
+```yaml
+global:
+  worker:
+    buffer-size: 8192    # Default size
+    # For high traffic, consider: 16384, 32768, or 65536
+```
+
+### Buffer Full Warning
+
+If you see this warning, increase your buffer size:
 
 ```bash
 logger[elastic] buffer is full, 7855 packet(s) dropped
 ```
-
-## CPU usage
-
-The conversion of DNS logs to JSON, text, or PCAP can incur CPU costs. Here's a list ordered by ns/op.
-
-```bash
-./dnsutils$ go test -bench=.
-goos: linux
-goarch: amd64
-pkg: github.com/dmachard/go-dnscollector/dnsutils
-cpu: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz 
-BenchmarkDnsMessage_ToTextFormat-4               2262946               518.8 ns/op            80 B/op          4 allocs/op
-BenchmarkDnsMessage_ToPacketLayer-4              1241736               926.9 ns/op          1144 B/op         12 allocs/op
-BenchmarkDnsMessage_ToDNSTap-4                    894579              1464 ns/op             592 B/op         18 allocs/op
-BenchmarkDnsMessage_ToExtendedDNSTap-4            608203              2342 ns/op            1056 B/op         25 allocs/op
-BenchmarkDnsMessage_ToJSON-4                      130080              7749 ns/op            3632 B/op          3 allocs/op
-BenchmarkDnsMessage_ToFlatten-4                   117115              9227 ns/op            8369 B/op         29 allocs/op
-BenchmarkDnsMessage_ToFlatJSON-4                   21238             54535 ns/op           20106 B/op        219 allocs/op
-BenchmarkDnsMessage_ToFlatten_Relabelling-4        35614             32544 ns/op            8454 B/op         30 allocs/op
-BenchmarkDnsMessage_ToJinjaFormat-4                 9840            120301 ns/op           50093 B/op        959 allocs/op
-```
-
-## Memory usage
-
-The main sources of memory usage in DNS-collector are:
-
-- Buffered channels
-- Prometheus logger with LRU cache
