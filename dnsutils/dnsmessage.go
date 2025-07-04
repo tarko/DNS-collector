@@ -189,6 +189,11 @@ type TransformATags struct {
 	Tags []string `json:"tags"`
 }
 
+type TransformRest struct {
+	Failed   bool   `json:"failed"`
+	Response string `json:"response"`
+}
+
 type RelabelingRule struct {
 	Regex       *regexp.Regexp
 	Replacement string
@@ -214,6 +219,7 @@ type DNSMessage struct {
 	MachineLearning *TransformML           `json:"ml,omitempty"`
 	Filtering       *TransformFiltering    `json:"filtering,omitempty"`
 	ATags           *TransformATags        `json:"atags,omitempty"`
+	Rest            *TransformRest         `json:"rest,omitempty"`
 	Relabeling      *TransformRelabeling   `json:"-"`
 }
 
@@ -263,6 +269,7 @@ func (dm *DNSMessage) Init() {
 func (dm *DNSMessage) InitTransforms() {
 	// init transforms
 	dm.ATags = &TransformATags{}
+	dm.Rest = &TransformRest{}
 	dm.Filtering = &TransformFiltering{}
 	dm.MachineLearning = &TransformML{}
 	dm.Reducer = &TransformReducer{}

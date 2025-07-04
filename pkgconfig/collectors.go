@@ -92,6 +92,16 @@ type ConfigCollectors struct {
 		ListenPort        int    `yaml:"listen-port" default:"10000"`
 		ChannelBufferSize int    `yaml:"chan-buffer-size" default:"0"`
 	} `yaml:"tzsp"`
+	Webhook struct {
+		Enable            bool   `yaml:"enable" default:"false"`
+		URL               string `yaml:"url" default:"http://127.0.0.1:8088"`
+		Timeout           int    `yaml:"timeout" default:"1"`
+		BasicAuthEnabled  bool   `yaml:"basic-auth-enable" default:"false"`
+		BasicAuthLogin    string `yaml:"basic-auth-login" default:""`
+		BasicAuthPwd      string `yaml:"basic-auth-pwd" default:""`
+		NumThreads        int    `yaml:"num-threads" default:"1"`
+		ChannelBufferSize int    `yaml:"chan-buffer-size" default:"0"`
+	} `yaml:"webhook"`
 }
 
 func (c *ConfigCollectors) SetDefault() {

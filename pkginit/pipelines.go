@@ -241,6 +241,10 @@ func CreateStanza(stanzaName string, config *pkgconfig.Config, mapCollectors map
 		mapCollectors[stanzaName] = workers.NewTZSP(nil, config, logger, stanzaName)
 		mapCollectors[stanzaName].SetMetrics(metrics)
 	}
+	if config.Collectors.Webhook.Enable {
+		mapCollectors[stanzaName] = workers.NewWebhook(nil, config, logger, stanzaName)
+		mapCollectors[stanzaName].SetMetrics(metrics)
+	}
 }
 
 func InitPipelines(mapLoggers map[string]workers.Worker, mapCollectors map[string]workers.Worker, config *pkgconfig.Config, logger *logger.Logger, telemetry *telemetry.PrometheusCollector) error {

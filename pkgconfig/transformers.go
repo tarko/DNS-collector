@@ -87,6 +87,14 @@ type ConfigTransformers struct {
 		Enable  bool     `yaml:"enable" default:"false"`
 		AddTags []string `yaml:"add-tags,flow" default:"[]"`
 	} `yaml:"atags"`
+	Rest struct {
+		Enable           bool   `yaml:"enable" default:"false"`
+		URL              string `yaml:"url" default:"http://127.0.0.1:8088"`
+		Timeout          int    `yaml:"timeout" default:"1"`
+		BasicAuthEnabled bool   `yaml:"basic-auth-enable" default:"false"`
+		BasicAuthLogin   string `yaml:"basic-auth-login" default:""`
+		BasicAuthPwd     string `yaml:"basic-auth-pwd" default:""`
+	} `yaml:"rest"`
 	Relabeling struct {
 		Enable bool               `yaml:"enable" default:"false"`
 		Rename []RelabelingConfig `yaml:"rename,flow"`
